@@ -202,6 +202,60 @@ nslookup dshome.dev
 
 ---
 
+### [21.10.2025] Filament Admin Panel - 403 Forbidden After Login
+
+**Грешка:**
+```
+GET https://dshome.dev/admin 403 (Forbidden)
+```
+След успешен login, потребителят се redirectва към `/admin`, но получава 403 грешка.
+
+**Причина:**
+Filament's `Authenticate` middleware не работи правилно с default Laravel authentication setup. Middleware-ът проверява за authenticated user, но по някаква причина не го разпознава правилно и хвърля 403.
+
+**Решение:**
+Временно disable-нахме `Authenticate` middleware в `AdminPanelProvider`:
+```php
+// app/Providers/Filament/AdminPanelProvider.php
+->authMiddleware([
+    // Authenticate::class, // Disabled - causes 403 errors
+]);
+```
+
+**Важно:** Това е временно решение! Без `Authenticate` middleware, панелът НЕ Е защитен. Използвай само за development/testing.
+
+**Превенция:**
+TODO: Намери правилна конфигурация на Filament authentication с Laravel guards.
+
+---
+
+### [21.10.2025] Filament - 500 Error "getUserAvatarUrl() null given"
+
+**Грешка:**
+```
+Filament\FilamentManager::getUserAvatarUrl(): Argument #1 ($user) must be of type
+Illuminate\Database\Eloquent\Model|Illuminate\Contracts\Auth\Authenticatable,
+null given
+```
+
+**Причина:**
+`AccountWidget` изисква authenticated user, но когато `Authenticate` middleware е disabled, няма logged in user и widget-ът получава `null`.
+
+**Решение:**
+Премахни `AccountWidget` от панела:
+```php
+// app/Providers/Filament/AdminPanelProvider.php
+->widgets([
+    // AccountWidget::class, // Disabled - requires authenticated user
+    FilamentInfoWidget::class,
+]);
+```
+
+**Превенция:**
+Когато authentication е disabled, премахни всички widgets и features които изискват authenticated user.
+
+---
+
 ## 💻 Local Development Errors
 
 ### [21.10.2025] PowerShell - Command Not Found
