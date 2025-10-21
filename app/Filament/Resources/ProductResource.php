@@ -16,15 +16,15 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static $navigationIcon = 'heroicon-o-shopping-bag';
 
-    protected static ?string $navigationLabel = 'Продукти';
+    protected static $navigationLabel = 'Продукти';
 
-    protected static ?string $pluralLabel = 'Продукти';
+    protected static $pluralLabel = 'Продукти';
 
-    protected static ?string $label = 'Продукт';
+    protected static $label = 'Продукт';
 
-    protected static ?int $navigationSort = 2;
+    protected static $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

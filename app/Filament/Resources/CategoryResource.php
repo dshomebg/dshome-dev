@@ -16,15 +16,15 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationLabel = 'Категории';
+    protected static $navigationLabel = 'Категории';
 
-    protected static ?string $pluralLabel = 'Категории';
+    protected static $pluralLabel = 'Категории';
 
-    protected static ?string $label = 'Категория';
+    protected static $label = 'Категория';
 
-    protected static ?int $navigationSort = 1;
+    protected static $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
