@@ -22,7 +22,7 @@ class ProductResource extends Resource
 
     protected static $pluralLabel = 'Продукти';
 
-    protected static $label = 'Продукт';
+    protected static ?string $label = 'Продукт';
 
     protected static $navigationSort = 2;
 
