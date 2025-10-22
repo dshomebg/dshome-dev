@@ -198,11 +198,15 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with(['images' => fn ($q) => $q->where('is_primary', true)]))
             ->columns([
-                ImageColumn::make('primaryImage.path')
+                ImageColumn::make('images.path')
                     ->label('Снимка')
                     ->circular()
                     ->defaultImageUrl(asset('images/placeholder-product.svg'))
+                    ->getStateUsing(function ($record) {
+                        return $record->images->where('is_primary', true)->first()?->path;
+                    })
                     ->size(50),
 
                 TextColumn::make('name')
