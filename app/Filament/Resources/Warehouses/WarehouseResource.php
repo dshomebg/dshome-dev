@@ -39,7 +39,7 @@ class WarehouseResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingStorefront;
 
-    protected static ?string $navigationGroup = 'Каталог';
+    protected static string|\UnitEnum|null $navigationGroup = 'Каталог';
 
     protected static ?int $navigationSort = 3;
 
