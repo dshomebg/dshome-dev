@@ -16,11 +16,11 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -71,55 +71,6 @@ class ProductResource extends Resource
     {
         return $schema
             ->components([
-                // Section: Images
-                Section::make('Изображения')
-                    ->description('Качете снимки на продукта. Първата снимка автоматично става основна.')
-                    ->schema([
-                        Repeater::make('images')
-                            ->relationship('images')
-                            ->schema([
-                                FileUpload::make('path')
-                                    ->label('Изображение')
-                                    ->image()
-                                    ->directory('products')
-                                    ->imageEditor()
-                                    ->imageEditorAspectRatios([
-                                        null,
-                                        '16:9',
-                                        '4:3',
-                                        '1:1',
-                                    ])
-                                    ->maxSize(5120) // 5MB
-                                    ->required()
-                                    ->columnSpanFull(),
-
-                                TextInput::make('alt_text')
-                                    ->label('ALT текст')
-                                    ->placeholder('Автоматично генериран от името на продукта')
-                                    ->helperText('За SEO и достъпност. Ако не попълните, ще се генерира автоматично.')
-                                    ->columnSpanFull(),
-
-                                Checkbox::make('is_primary')
-                                    ->label('Основна снимка')
-                                    ->helperText('Отметнете ако това е основната снимка на продукта')
-                                    ->default(false),
-
-                                TextInput::make('sort_order')
-                                    ->label('Подредба')
-                                    ->numeric()
-                                    ->default(0)
-                                    ->helperText('По-ниското число се показва първо'),
-                            ])
-                            ->reorderable()
-                            ->collapsible()
-                            ->itemLabel(fn (array $state): ?string => $state['alt_text'] ?? 'Изображение')
-                            ->addActionLabel('+ Добави снимка')
-                            ->defaultItems(0)
-                            ->columnSpanFull(),
-                    ])
-                    ->collapsible()
-                    ->columnSpanFull(),
-
                 // Section: Basic Information
                 Section::make('Основна информация')
                     ->schema([
@@ -273,6 +224,13 @@ class ProductResource extends Resource
                     RestoreBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\ImagesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
