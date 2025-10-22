@@ -1,14 +1,15 @@
 # План за Разработка - dshome.dev E-commerce
 
 **Дата започване:** 21 Октомври 2025  
-**Последна актуализация:** 21 Октомври 2025
+**Последна актуализация:** 22 Октомври 2025
 
 ---
 
 ## 📊 Общ Прогрес
 
-**Фаза:** Setup & Infrastructure ✅  
-**Следваща фаза:** MVP Development 🔄
+**Фаза:** Setup & Infrastructure ✅ (ЗАВЪРШЕНА)
+**Текуща фаза:** MVP Development 🔄
+**Процент изпълнение:** ~50% (Products + Categories ГОТОВИ, липсват Warehouses + Orders)
 
 ---
 
@@ -45,38 +46,47 @@
 ## 🔄 Фаза 1: MVP Development (В ПРОЦЕС)
 
 ### 1.1 Database Architecture
-- [ ] Проектиране на database schema
-- [ ] Документиране на relationships
-- [ ] Създаване на migrations
-  - [ ] Users & roles
-  - [ ] Products базова структура
-  - [ ] Categories (йерархични)
+- [x] Проектиране на database schema
+- [x] Документиране на relationships
+- [x] Създаване на migrations
+  - [x] Users & roles
+  - [x] Products базова структура
+  - [x] Categories (йерархични)
   - [ ] Warehouses (складове)
   - [ ] Orders базова структура
 
-### 1.2 Модул: Продукти (Базови функции)
-- [ ] Product Model
-- [ ] ProductResource (Filament)
-- [ ] Основни полета:
-  - [ ] Заглавие
-  - [ ] Референция (SKU)
-  - [ ] Цена
-  - [ ] Количество
-  - [ ] Статус
-- [ ] Качване на изображения
-- [ ] WYSIWYG редактор за описание
+### 1.2 Модул: Продукти (Базови функции) ✅
+- [x] Product Model
+- [x] ProductResource (Filament)
+- [x] Основни полета:
+  - [x] Заглавие
+  - [x] Референция (SKU)
+  - [x] Цена
+  - [x] Количество
+  - [x] Статус
+  - [x] Meta title/description
+  - [x] Категория (Select with relationship)
+- [x] CRUD операции (Create, Edit, Delete, Restore)
+- [x] Soft Deletes
+- [x] Bulk actions
+- [ ] Качване на изображения (TODO: Images relation + FileUpload)
+- [ ] WYSIWYG редактор за описание (TODO: RichEditor)
 
-### 1.3 Модул: Категории
-- [ ] Category Model
-- [ ] CategoryResource (Filament)
-- [ ] Йерархична структура (parent/child)
-- [ ] Полета:
-  - [ ] Име
-  - [ ] Slug (SEO URL)
-  - [ ] Описание
-  - [ ] Изображение
-  - [ ] Meta title/description
-- [ ] Tree view в админ панела
+### 1.3 Модул: Категории ✅
+- [x] Category Model
+- [x] CategoryResource (Filament)
+- [x] Йерархична структура (parent/child)
+- [x] Полета:
+  - [x] Име
+  - [x] Slug (SEO URL)
+  - [x] Описание
+  - [x] Изображение (FileUpload)
+  - [x] Meta title/description
+  - [x] Sort order
+  - [x] Parent category (Select)
+- [x] CRUD операции
+- [x] Soft Deletes
+- [ ] Tree view в админ панела (TODO: Consider Filament Tree plugin)
 
 ### 1.4 Модул: Складове (Базово)
 - [ ] Warehouse Model
@@ -89,7 +99,8 @@
   - [ ] Физически магазин (checkbox)
 
 ### 1.5 Връзки между Модули
-- [ ] Product belongsTo Category
+- [x] Product belongsTo Category
+- [x] Category hasMany Products (with parent/child hierarchy)
 - [ ] Product belongsToMany Warehouses (stock levels)
 - [ ] Filament Relations визуализация
 
