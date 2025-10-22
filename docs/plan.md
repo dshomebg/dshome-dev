@@ -69,8 +69,18 @@
 - [x] CRUD операции (Create, Edit, Delete, Restore)
 - [x] Soft Deletes
 - [x] Bulk actions
-- [ ] Качване на изображения (TODO: Images relation + FileUpload)
-- [ ] WYSIWYG редактор за описание (TODO: RichEditor)
+- [x] Качване на изображения ✅ (22.10.2025)
+  - [x] ProductImage Model
+  - [x] product_images migration
+  - [x] ImagesRelationManager
+  - [x] FileUpload с image editor
+  - [x] Auto ALT text generation
+  - [x] Primary image selection
+  - [x] Drag & drop reordering
+  - [x] ProductObserver за auto-logic
+  - [x] ProductImageObserver за image management
+  - [x] Placeholder SVG
+- [ ] WYSIWYG редактор за описание (TODO: RichEditor за short/long description)
 
 ### 1.3 Модул: Категории ✅
 - [x] Category Model

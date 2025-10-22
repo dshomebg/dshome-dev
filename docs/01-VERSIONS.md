@@ -101,7 +101,32 @@ Filament автоматично инсталира:
 
 ## 🔄 Upgrade History
 
-### 22 Октомври 2025
+### 22 Октомври 2025 - Product Images Feature
+- **Добавена Product Images функционалност:**
+  - ProductImage Model с relation към Products (hasMany)
+  - product_images migration (path, alt_text, is_primary, sort_order)
+  - ImagesRelationManager за управление на снимки в Edit страница
+  - FileUpload с image editor (crop, rotate, aspect ratios)
+  - Auto-generate ALT текст от името на продукта
+  - Auto-set първата снимка като primary
+  - Drag & drop reordering
+  - Placeholder SVG за продукти без снимки
+  - ProductObserver за auto slug, meta fields, ALT text generation
+  - ProductImageObserver за primary image logic и sort order
+  - Storage: `/storage/app/public/products/`
+
+- **Структурни промени в ProductResource:**
+  - Смяна от ManageProducts (single page) към отделни Create/Edit/List pages
+  - Разделяне на List/Create/Edit за поддръжка на RelationManagers
+  - Обновена таблица с ImageColumn за primary image
+  - Подобрени badges и color coding за quantity/price
+
+- **Bug fixes:**
+  - Fix Section namespace: `Filament\Schemas\Components\Section`
+  - Fix Actions namespace в RelationManager: `Filament\Actions\*`
+  - Fix eager loading на primary images в таблицата
+
+### 22 Октомври 2025 - Каталог Модули
 - Добавени нови модули в Каталог секцията:
   - Warehouses (Складове): Full CRUD с many-to-many relation към Products
   - Brands (Марки): Full CRUD със SEO полета
