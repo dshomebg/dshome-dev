@@ -13,6 +13,10 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -21,6 +25,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -66,31 +71,127 @@ class ProductResource extends Resource
     {
         return $schema
             ->components([
-                Select::make('category_id')
-                    ->relationship('category', 'name'),
-                TextInput::make('name')
-                    ->required(),
-                TextInput::make('slug')
-                    ->required(),
-                TextInput::make('sku')
-                    ->label('SKU')
-                    ->required(),
-                Textarea::make('description')
+                // Section: Images
+                Section::make('Изображения')
+                    ->description('Качете снимки на продукта. Първата снимка автоматично става основна.')
+                    ->schema([
+                        Repeater::make('images')
+                            ->relationship('images')
+                            ->schema([
+                                FileUpload::make('path')
+                                    ->label('Изображение')
+                                    ->image()
+                                    ->directory('products')
+                                    ->imageEditor()
+                                    ->imageEditorAspectRatios([
+                                        null,
+                                        '16:9',
+                                        '4:3',
+                                        '1:1',
+                                    ])
+                                    ->maxSize(5120) // 5MB
+                                    ->required()
+                                    ->columnSpanFull(),
+
+                                TextInput::make('alt_text')
+                                    ->label('ALT текст')
+                                    ->placeholder('Автоматично генериран от името на продукта')
+                                    ->helperText('За SEO и достъпност. Ако не попълните, ще се генерира автоматично.')
+                                    ->columnSpanFull(),
+
+                                Checkbox::make('is_primary')
+                                    ->label('Основна снимка')
+                                    ->helperText('Отметнете ако това е основната снимка на продукта')
+                                    ->default(false),
+
+                                TextInput::make('sort_order')
+                                    ->label('Подредба')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->helperText('По-ниското число се показва първо'),
+                            ])
+                            ->reorderable()
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => $state['alt_text'] ?? 'Изображение')
+                            ->addActionLabel('+ Добави снимка')
+                            ->defaultItems(0)
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible()
                     ->columnSpanFull(),
-                TextInput::make('price')
-                    ->required()
-                    ->numeric()
-                    ->default(0)
-                    ->prefix('$'),
-                TextInput::make('quantity')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                TextInput::make('meta_title'),
-                Textarea::make('meta_description')
+
+                // Section: Basic Information
+                Section::make('Основна информация')
+                    ->schema([
+                        Select::make('category_id')
+                            ->label('Категория')
+                            ->relationship('category', 'name')
+                            ->searchable()
+                            ->preload(),
+
+                        TextInput::make('name')
+                            ->label('Име на продукта')
+                            ->required()
+                            ->columnSpanFull(),
+
+                        TextInput::make('slug')
+                            ->label('SEO URL')
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->helperText('URL-friendly версия на името'),
+
+                        TextInput::make('sku')
+                            ->label('SKU / Референция')
+                            ->required()
+                            ->unique(ignoreRecord: true)
+                            ->helperText('Уникален номер на продукта'),
+
+                        Textarea::make('description')
+                            ->label('Описание')
+                            ->rows(5)
+                            ->columnSpanFull(),
+
+                        TextInput::make('price')
+                            ->label('Цена')
+                            ->required()
+                            ->numeric()
+                            ->default(0)
+                            ->prefix('лв.')
+                            ->helperText('Цена с ДДС'),
+
+                        TextInput::make('quantity')
+                            ->label('Количество')
+                            ->required()
+                            ->numeric()
+                            ->default(0)
+                            ->helperText('Налично количество'),
+
+                        Toggle::make('active')
+                            ->label('Активен')
+                            ->default(true)
+                            ->required(),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
+
+                // Section: SEO
+                Section::make('SEO')
+                    ->schema([
+                        TextInput::make('meta_title')
+                            ->label('Мета заглавие')
+                            ->maxLength(60)
+                            ->helperText('Оптимално: 50-60 символа'),
+
+                        Textarea::make('meta_description')
+                            ->label('Мета описание')
+                            ->rows(3)
+                            ->maxLength(160)
+                            ->helperText('Оптимално: 150-160 символа')
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible()
+                    ->collapsed()
                     ->columnSpanFull(),
-                Toggle::make('active')
-                    ->required(),
             ]);
     }
 
@@ -98,25 +199,47 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('category.name')
-                    ->searchable(),
+                ImageColumn::make('primaryImage.path')
+                    ->label('Снимка')
+                    ->circular()
+                    ->defaultImageUrl(asset('images/placeholder-product.svg'))
+                    ->size(50),
+
                 TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
+                    ->label('Име')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('category.name')
+                    ->label('Категория')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('sku')
-                    ->label('SKU')
-                    ->searchable(),
+                    ->label('Референция')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable()
+                    ->copyMessage('SKU копиран!')
+                    ->badge()
+                    ->color('info'),
+
                 TextColumn::make('price')
-                    ->money()
+                    ->label('Цена')
+                    ->money('BGN')
                     ->sortable(),
+
                 TextColumn::make('quantity')
+                    ->label('Количество')
                     ->numeric()
-                    ->sortable(),
-                TextColumn::make('meta_title')
-                    ->searchable(),
+                    ->sortable()
+                    ->badge()
+                    ->color(fn (int $state): string => $state > 0 ? 'success' : 'danger'),
+
                 IconColumn::make('active')
-                    ->boolean(),
+                    ->label('Статус')
+                    ->boolean()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

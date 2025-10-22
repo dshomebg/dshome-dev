@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
@@ -59,6 +60,37 @@ class Product extends Model
         return $this->belongsToMany(Warehouse::class)
             ->withPivot('quantity', 'reserved')
             ->withTimestamps();
+    }
+
+    /**
+     * Get all images for the product.
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)->orderBy('sort_order');
+    }
+
+    /**
+     * Get the primary/featured image for the product.
+     */
+    public function primaryImage(): ?ProductImage
+    {
+        return $this->images()->where('is_primary', true)->first();
+    }
+
+    /**
+     * Get the URL of the primary image or a placeholder.
+     */
+    public function getPrimaryImageUrlAttribute(): string
+    {
+        $primaryImage = $this->primaryImage();
+
+        if ($primaryImage) {
+            return $primaryImage->url;
+        }
+
+        // Return placeholder image
+        return asset('images/placeholder-product.svg');
     }
 
     /**
