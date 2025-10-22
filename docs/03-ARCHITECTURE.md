@@ -173,7 +173,8 @@ class Product extends Model
 
 **Many-to-Many (N:M)**
 ```php
-// Product belongs to many Warehouses (stock)
+// Product belongs to many Warehouses (stock tracking)
+// Pivot table: product_warehouse (quantity, reserved)
 class Product extends Model
 {
     public function warehouses(): BelongsToMany
@@ -181,6 +182,42 @@ class Product extends Model
         return $this->belongsToMany(Warehouse::class)
             ->withPivot('quantity', 'reserved')
             ->withTimestamps();
+    }
+
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+}
+
+class Warehouse extends Model
+{
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class)
+            ->withPivot('quantity', 'reserved')
+            ->withTimestamps();
+    }
+}
+
+class Brand extends Model
+{
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+}
+
+class Supplier extends Model
+{
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
     }
 }
 ```
@@ -531,6 +568,10 @@ protected function afterCreate(): void
 
 | Дата | Решение | Причина |
 |------|---------|---------|
+| 22.10.2025 | Warehouses many-to-many с Products | Позволява stock tracking по складове с pivot данни (quantity, reserved) |
+| 22.10.2025 | Brands и Suppliers като отделни таблици | Brands с пълен SEO, Suppliers само за статистика |
+| 22.10.2025 | Filament навигация групирана под "Каталог" | По-добра организация на админ панела |
+| 22.10.2025 | Schema-based API във Filament Resources | Filament 4.1 изисква Schema вместо Form |
 | 21.10.2025 | PostgreSQL вместо MySQL | По-добър JSON support, по-бърз при сложни queries, scalability |
 | 21.10.2025 | Filament 4 за admin | Готов admin панел, спестява месеци разработка |
 | 21.10.2025 | SQLite за локална разработка | По-просто, не изисква отделен DB сървър |

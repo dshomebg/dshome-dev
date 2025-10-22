@@ -101,6 +101,16 @@ Filament автоматично инсталира:
 
 ## 🔄 Upgrade History
 
+### 22 Октомври 2025
+- Добавени нови модули в Каталог секцията:
+  - Warehouses (Складове): Full CRUD с many-to-many relation към Products
+  - Brands (Марки): Full CRUD със SEO полета
+  - Suppliers (Доставчици): Basic CRUD
+- Организирана Filament навигация под "Каталог" група
+- Migrations: 3 нови (warehouses, product_warehouse pivot, brands, suppliers)
+- Models: 3 нови (Warehouse, Brand, Supplier)
+- Filament Resources: 3 нови (WarehouseResource, BrandResource, SupplierResource)
+
 ### 21 Октомври 2025
 - Initial setup
 - Laravel 12.34.0
