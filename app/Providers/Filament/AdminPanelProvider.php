@@ -28,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->authGuard('web')
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -38,7 +39,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                // AccountWidget::class, // Disabled - requires authenticated user
+                AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
             ->middleware([
@@ -53,7 +54,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                // Authenticate::class, // Disabled - causes 403 errors
+                Authenticate::class,
             ]);
     }
 }
