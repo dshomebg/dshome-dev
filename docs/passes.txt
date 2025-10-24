@@ -1,0 +1,2 @@
+stored commands
+git add . (add files to git hub)
