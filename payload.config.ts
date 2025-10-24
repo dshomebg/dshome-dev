@@ -1,5 +1,5 @@
 import { buildConfig } from 'payload'
-import { drizzleAdapter } from '@payloadcms/drizzle'
+import { drizzle } from '@payloadcms/drizzle'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -34,7 +34,7 @@ export default buildConfig({
   },
 
   // Database adapter - using Drizzle with MySQL
-  db: drizzleAdapter({
+  db: drizzle({
     url: `mysql://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}:${process.env.DATABASE_PORT}/${process.env.DATABASE_NAME}`,
   }),
 
