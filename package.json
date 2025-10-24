@@ -10,12 +10,23 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "payload": "payload",
+    "generate:types": "payload generate:types"
   },
   "dependencies": {
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "next": "16.0.0"
+    "next": "16.0.0",
+    "drizzle-orm": "^0.37.0",
+    "mysql2": "^3.11.5",
+    "payload": "^3.0.0",
+    "@payloadcms/drizzle": "^3.0.0",
+    "@payloadcms/next": "^3.0.0",
+    "@payloadcms/richtext-lexical": "^3.0.0",
+    "@payloadcms/ui": "^3.0.0",
+    "sharp": "^0.33.5",
+    "graphql": "^16.9.0"
   },
   "devDependencies": {
     "typescript": "^5",

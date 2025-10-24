@@ -21,3 +21,12 @@ PM2 6.0.13
 Docker 28.2.2
 Docker Compose 1.29.2
 Meilisearch 1.11
+
+NPM Dependencies (основни пакети):
+Next.js 16.0.0
+React 19.2.0
+TypeScript 5.x
+Tailwind CSS 4.x
+Drizzle ORM (latest) - MySQL/MariaDB adapter
+mysql2 (latest) - MySQL driver за Node.js
+drizzle-kit (latest) - Migration tool
