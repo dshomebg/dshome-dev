@@ -13,7 +13,6 @@ Git Hub: https://github.com/dshomebg/dshome-dev
 Инсталиран софтуер :
 Ubuntu 24.04.3 LTS
 Redis server 7.0.15
-Varnishd -7.5.0 
 Mariadb 11.4.8
 nginx/1.28.0
 Node.js 22.21.0
