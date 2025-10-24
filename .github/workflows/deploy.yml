@@ -26,10 +26,6 @@ jobs:
         with:
           node-version: '22.x' # Версията от TECH_STACK.md
 
-      # 3. Инсталира зависимостите на проекта.
-      - name: Install Dependencies
-        run: npm install
-
       # 4. Деплойва файловете към сървъра.
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.0.3
