@@ -23,13 +23,36 @@
     "react-hook-form": "^7.53.0",
     "zod": "^3.23.8",
     "@tailwindcss/forms": "^0.5.9",
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/list": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
+    "@popperjs/core": "^2.11.8",
+    "@react-jvectormap/core": "^1.0.4",
+    "@react-jvectormap/world": "^1.1.2",
     "apexcharts": "^4.3.0",
     "clsx": "^2.1.1",
     "flatpickr": "^4.6.13",
     "prismjs": "^1.30.0",
     "react-apexcharts": "^1.7.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "react-dropzone": "^14.3.5",
     "simplebar-react": "^3.3.0",
+    "swiper": "^11.2.0",
     "tailwind-merge": "^2.6.0"
+  },
+  "overrides": {
+    "@react-jvectormap/core": {
+      "react": "^16.8.0 || ^17 || ^18 || ^19",
+      "react-dom": "^16.8.0 || ^17 || ^18 || ^19"
+    },
+    "@react-jvectormap/world": {
+      "react": "^16.8.0 || ^17 || ^18 || ^19",
+      "react-dom": "^16.8.0 || ^17 || ^18 || ^19"
+    }
   },
   "devDependencies": {
     "typescript": "^5",
