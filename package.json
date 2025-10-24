@@ -26,6 +26,7 @@
     "apexcharts": "^4.3.0",
     "clsx": "^2.1.1",
     "flatpickr": "^4.6.13",
+    "prismjs": "^1.30.0",
     "react-apexcharts": "^1.7.0",
     "simplebar-react": "^3.3.0",
     "tailwind-merge": "^2.6.0"
@@ -36,6 +37,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/bcryptjs": "^2.4.6",
+    "@types/prismjs": "^1.26.5",
     "@tailwindcss/postcss": "^4",
     "tailwindcss": "^4",
     "eslint": "^9",
