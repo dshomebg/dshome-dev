@@ -10,7 +10,7 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isMobileOpen, isOpen } = useSidebar();
+  const { isMobileOpen } = useSidebar();
 
   return (
     <div className="flex h-screen overflow-hidden">
