@@ -1,4 +1,4 @@
-import { mysqlTable, varchar, int, timestamp, boolean } from 'drizzle-orm/mysql-core';
+import { mysqlTable, varchar, int, timestamp } from 'drizzle-orm/mysql-core';
 
 /**
  * Users table - за тестване на Drizzle ORM
