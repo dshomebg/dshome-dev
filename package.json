@@ -10,9 +10,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
-    "payload": "payload",
-    "generate:types": "payload generate:types"
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -20,23 +18,22 @@
     "next": "15.2.3",
     "drizzle-orm": "^0.37.0",
     "mysql2": "^3.11.5",
-    "payload": "^3.0.0",
-    "@payloadcms/drizzle": "^3.0.0",
-    "@payloadcms/next": "^3.0.0",
-    "@payloadcms/richtext-lexical": "^3.0.0",
-    "@payloadcms/ui": "^3.0.0",
-    "sharp": "^0.33.5",
-    "graphql": "^16.9.0"
+    "next-auth": "^4.24.0",
+    "bcryptjs": "^2.4.3",
+    "react-hook-form": "^7.53.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/bcryptjs": "^2.4.6",
     "@tailwindcss/postcss": "^4",
     "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
-    "@eslint/eslintrc": "^3"
+    "@eslint/eslintrc": "^3",
+    "drizzle-kit": "^0.30.0"
   }
 }
