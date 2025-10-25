@@ -85,7 +85,7 @@ export default function CreateCategoryPage() {
       } else {
         setError(data.message);
       }
-    } catch (err) {
+    } catch {
       setError("Грешка при създаване на категория");
     } finally {
       setLoading(false);

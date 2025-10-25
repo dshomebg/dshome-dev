@@ -38,7 +38,7 @@ export default function CategoriesPage() {
       } else {
         setError(data.message);
       }
-    } catch (err) {
+    } catch {
       setError("Грешка при зареждане на категории");
     } finally {
       setLoading(false);
@@ -62,7 +62,7 @@ export default function CategoriesPage() {
       } else {
         alert(data.message);
       }
-    } catch (err) {
+    } catch {
       alert("Грешка при изтриване на категория");
     }
   };

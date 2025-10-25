@@ -120,7 +120,7 @@ export default function EditCategoryPage({
       } else {
         setError(data.message);
       }
-    } catch (err) {
+    } catch {
       setError("Грешка при запазване на категория");
     } finally {
       setSaving(false);
