@@ -2,7 +2,6 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { LockIcon, EnvelopeIcon } from "@/icons";
 
 export default function LoginPage() {
@@ -31,7 +30,7 @@ export default function LoginPage() {
         router.push("/dashboard");
         router.refresh();
       }
-    } catch (error) {
+    } catch {
       setError("Възникна грешка при влизане");
       setIsLoading(false);
     }
