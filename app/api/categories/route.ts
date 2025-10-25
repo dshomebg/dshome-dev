@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/src/db";
 import { categories } from "@/src/db/schema";
-import { eq, isNull, desc } from "drizzle-orm";
+import { eq, isNull } from "drizzle-orm";
 
 /**
  * GET /api/categories
