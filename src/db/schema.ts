@@ -1,4 +1,4 @@
-import { mysqlTable, varchar, int, timestamp, text } from 'drizzle-orm/mysql-core';
+import { mysqlTable, varchar, int, timestamp, text, boolean } from 'drizzle-orm/mysql-core';
 
 /**
  * Users table - за NextAuth.js authentication
@@ -53,4 +53,26 @@ export const verificationTokens = mysqlTable('verification_tokens', {
   identifier: varchar('identifier', { length: 255 }).notNull(),
   token: varchar('token', { length: 255 }).notNull().unique(),
   expires: timestamp('expires').notNull(),
+});
+
+/**
+ * Categories table - за категории на продукти
+ * Поддържа йерархична структура (parent-child)
+ */
+export const categories = mysqlTable('categories', {
+  id: int('id').primaryKey().autoincrement(),
+  name: varchar('name', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 255 }).notNull().unique(),
+  description: text('description'),
+  parentId: int('parent_id'), // NULL за root категории
+  image: varchar('image', { length: 500 }),
+  isActive: boolean('is_active').default(true),
+  position: int('position').default(0), // за sorting
+
+  // SEO полета
+  metaTitle: varchar('meta_title', { length: 255 }),
+  metaDescription: text('meta_description'),
+
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
 });
