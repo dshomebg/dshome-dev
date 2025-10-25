@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PlusIcon, PencilIcon, TrashBinIcon } from "@/icons";
+import { PlusIcon, PencilIcon, TrashBinIcon, ChevronDownIcon, ChevronUpIcon } from "@/icons";
 
 interface Category {
   id: number;
@@ -16,10 +16,126 @@ interface Category {
   metaDescription: string | null;
   createdAt: Date;
   updatedAt: Date;
+  children?: Category[];
+}
+
+interface CategoryRowProps {
+  category: Category;
+  level: number;
+  onDelete: (id: number, name: string) => void;
+}
+
+// Build tree structure from flat array
+function buildTree(categories: Category[]): Category[] {
+  const categoryMap = new Map<number, Category>();
+  const tree: Category[] = [];
+
+  // First pass: create map of all categories
+  categories.forEach((cat) => {
+    categoryMap.set(cat.id, { ...cat, children: [] });
+  });
+
+  // Second pass: build tree
+  categoryMap.forEach((cat) => {
+    if (cat.parentId === null) {
+      tree.push(cat);
+    } else {
+      const parent = categoryMap.get(cat.parentId);
+      if (parent) {
+        parent.children = parent.children || [];
+        parent.children.push(cat);
+      }
+    }
+  });
+
+  return tree;
+}
+
+// Category Row Component with expand/collapse
+function CategoryRow({ category, level, onDelete }: CategoryRowProps) {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const hasChildren = category.children && category.children.length > 0;
+  const indent = level * 2; // rem units for indentation
+
+  return (
+    <>
+      <tr className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50">
+        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white">
+          {category.id}
+        </td>
+        <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+          <div className="flex items-center gap-2" style={{ paddingLeft: `${indent}rem` }}>
+            {hasChildren && (
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex h-5 w-5 items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+              >
+                {isExpanded ? (
+                  <ChevronDownIcon className="h-4 w-4" />
+                ) : (
+                  <ChevronUpIcon className="h-4 w-4" />
+                )}
+              </button>
+            )}
+            {!hasChildren && <span className="w-5" />}
+            <span>{category.name}</span>
+          </div>
+        </td>
+        <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+          {category.slug}
+        </td>
+        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+          {category.parentId || "-"}
+        </td>
+        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+          {category.position}
+        </td>
+        <td className="whitespace-nowrap px-6 py-4">
+          {category.isActive ? (
+            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/20 dark:text-green-400">
+              Активна
+            </span>
+          ) : (
+            <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-400">
+              Неактивна
+            </span>
+          )}
+        </td>
+        <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
+          <div className="flex items-center justify-end gap-2">
+            <Link
+              href={`/categories/edit/${category.id}`}
+              className="inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            >
+              <PencilIcon className="h-4 w-4" />
+              Редакция
+            </Link>
+            <button
+              onClick={() => onDelete(category.id, category.name)}
+              className="inline-flex items-center gap-1 rounded-lg border border-red-300 bg-white px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:bg-red-50 dark:border-red-900 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-red-900/20"
+            >
+              <TrashBinIcon className="h-4 w-4" />
+              Изтрий
+            </button>
+          </div>
+        </td>
+      </tr>
+      {/* Render children recursively */}
+      {hasChildren && isExpanded && category.children!.map((child) => (
+        <CategoryRow
+          key={child.id}
+          category={child}
+          level={level + 1}
+          onDelete={onDelete}
+        />
+      ))}
+    </>
+  );
 }
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [treeData, setTreeData] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -36,6 +152,9 @@ export default function CategoriesPage() {
 
       if (data.success) {
         setCategories(data.data);
+        // Build tree structure
+        const tree = buildTree(data.data);
+        setTreeData(tree);
       } else {
         setError(data.message);
       }
@@ -137,7 +256,7 @@ export default function CategoriesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-              {categories.length === 0 ? (
+              {treeData.length === 0 ? (
                 <tr>
                   <td
                     colSpan={7}
@@ -147,56 +266,13 @@ export default function CategoriesPage() {
                   </td>
                 </tr>
               ) : (
-                categories.map((category) => (
-                  <tr
+                treeData.map((category) => (
+                  <CategoryRow
                     key={category.id}
-                    className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                  >
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white">
-                      {category.id}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                      {category.name}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                      {category.slug}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                      {category.parentId || "-"}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                      {category.position}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      {category.isActive ? (
-                        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/20 dark:text-green-400">
-                          Активна
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-400">
-                          Неактивна
-                        </span>
-                      )}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/categories/edit/${category.id}`}
-                          className="inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                        >
-                          <PencilIcon className="h-4 w-4" />
-                          Редакция
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(category.id, category.name)}
-                          className="inline-flex items-center gap-1 rounded-lg border border-red-300 bg-white px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:bg-red-50 dark:border-red-900 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-red-900/20"
-                        >
-                          <TrashBinIcon className="h-4 w-4" />
-                          Изтрий
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                    category={category}
+                    level={0}
+                    onDelete={handleDelete}
+                  />
                 ))
               )}
             </tbody>
