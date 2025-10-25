@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { SidebarProvider } from "@/context/SidebarContext";
+import { SessionProvider } from "@/src/components/providers/SessionProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,11 +23,13 @@ export default function RootLayout({
   return (
     <html lang="bg" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider>
-          <SidebarProvider>
-            {children}
-          </SidebarProvider>
-        </ThemeProvider>
+        <SessionProvider>
+          <ThemeProvider>
+            <SidebarProvider>
+              {children}
+            </SidebarProvider>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
