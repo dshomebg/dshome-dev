@@ -9,19 +9,6 @@ interface Category {
   name: string;
 }
 
-interface Product {
-  id: number;
-  sku: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  shortDescription: string | null;
-  price: string;
-  stock: number;
-  isActive: boolean | number;
-  categoryIds?: number[];
-}
-
 export default function EditProductPage({
   params,
 }: {
