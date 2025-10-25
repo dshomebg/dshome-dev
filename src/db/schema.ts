@@ -1,4 +1,4 @@
-import { mysqlTable, varchar, int, timestamp, text, boolean } from 'drizzle-orm/mysql-core';
+import { mysqlTable, varchar, int, timestamp, text, boolean, decimal, json } from 'drizzle-orm/mysql-core';
 
 /**
  * Users table - за NextAuth.js authentication
@@ -75,4 +75,68 @@ export const categories = mysqlTable('categories', {
 
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+});
+
+/**
+ * Products table - основна таблица за продукти
+ */
+export const products = mysqlTable('products', {
+  id: int('id').primaryKey().autoincrement(),
+
+  // Основна информация
+  sku: varchar('sku', { length: 100 }).notNull().unique(), // Референтен номер
+  name: varchar('name', { length: 500 }).notNull(),
+  slug: varchar('slug', { length: 500 }).notNull().unique(),
+  description: text('description'),
+  shortDescription: text('short_description'),
+
+  // Цени (в лева)
+  price: decimal('price', { precision: 10, scale: 2 }).notNull(), // Цена с ДДС
+  priceWithoutVat: decimal('price_without_vat', { precision: 10, scale: 2 }), // Цена без ДДС
+  cost: decimal('cost', { precision: 10, scale: 2 }), // Себестойност
+
+  // Промоция/Намаление
+  discount: decimal('discount', { precision: 10, scale: 2 }).default('0'), // Стойност на намалението
+  discountType: varchar('discount_type', { length: 20 }).default('fixed'), // fixed или percent
+  discountStart: timestamp('discount_start'),
+  discountEnd: timestamp('discount_end'),
+
+  // Наличност
+  stock: int('stock').default(0), // Общо количество
+  lowStockThreshold: int('low_stock_threshold').default(5), // Праг за ниска наличност
+
+  // Изображения (JSON array of image URLs)
+  images: json('images').$type<string[]>().default([]),
+
+  // Размери и тегло
+  width: decimal('width', { precision: 10, scale: 2 }), // см
+  height: decimal('height', { precision: 10, scale: 2 }), // см
+  depth: decimal('depth', { precision: 10, scale: 2 }), // см
+  weight: decimal('weight', { precision: 10, scale: 2 }), // кг
+
+  // Доставка
+  deliveryTime: varchar('delivery_time', { length: 100 }), // "1-2 работни дни"
+
+  // Статус и видимост
+  isActive: boolean('is_active').default(true),
+  isFeatured: boolean('is_featured').default(false), // Промо/featured продукт
+  position: int('position').default(0),
+
+  // SEO
+  metaTitle: varchar('meta_title', { length: 255 }),
+  metaDescription: text('meta_description'),
+
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow().onUpdateNow(),
+});
+
+/**
+ * Product Categories - Many-to-many връзка между продукти и категории
+ */
+export const productCategories = mysqlTable('product_categories', {
+  id: int('id').primaryKey().autoincrement(),
+  productId: int('product_id').notNull(),
+  categoryId: int('category_id').notNull(),
+  isPrimary: boolean('is_primary').default(false), // Основна категория
+  createdAt: timestamp('created_at').defaultNow(),
 });

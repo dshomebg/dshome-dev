@@ -53,7 +53,7 @@ function buildTree(categories: Category[]): Category[] {
 
 // Category Row Component with expand/collapse
 function CategoryRow({ category, level, onDelete }: CategoryRowProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const hasChildren = category.children && category.children.length > 0;
   const indent = level * 2; // rem units for indentation
 
