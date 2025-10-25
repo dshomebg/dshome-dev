@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { slugify } from "@/src/utils/slugify";
 
 interface Category {
   id: number;
@@ -49,14 +50,9 @@ export default function CreateCategoryPage() {
     }
 
     // Auto-generate slug from name
-    if (name === "name" && !formData.slug) {
-      const slug = value
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-")
-        .trim();
-      setFormData((prev) => ({ ...prev, slug }));
+    if (name === "name") {
+      const generatedSlug = slugify(value);
+      setFormData((prev) => ({ ...prev, slug: generatedSlug }));
     }
   };
 

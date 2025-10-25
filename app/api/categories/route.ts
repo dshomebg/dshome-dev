@@ -11,9 +11,17 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const parentId = searchParams.get("parentId");
+    const all = searchParams.get("all");
 
     let query;
-    if (parentId === "null" || parentId === null) {
+
+    // If "all" parameter is set, return all categories
+    if (all === "true") {
+      query = db
+        .select()
+        .from(categories)
+        .orderBy(categories.position, categories.name);
+    } else if (parentId === "null" || parentId === null) {
       // Връщаме само root категории (без parent)
       query = db
         .select()
@@ -28,10 +36,11 @@ export async function GET(request: Request) {
         .where(eq(categories.parentId, parseInt(parentId)))
         .orderBy(categories.position, categories.name);
     } else {
-      // Връщаме всички категории
+      // По подразбиране - само root категории
       query = db
         .select()
         .from(categories)
+        .where(isNull(categories.parentId))
         .orderBy(categories.position, categories.name);
     }
 

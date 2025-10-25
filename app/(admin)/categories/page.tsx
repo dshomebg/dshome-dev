@@ -30,7 +30,8 @@ export default function CategoriesPage() {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/categories");
+      // Fetch all categories (not just root)
+      const response = await fetch("/api/categories?all=true");
       const data = await response.json();
 
       if (data.success) {
